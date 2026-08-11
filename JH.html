@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HydroGreen - Cultiva el futuro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: 'Inter', system-ui, sans-serif; }
+    .slide-img { transition: opacity 0.5s ease; }
+    .dot-active  { width: 24px; height: 12px; background: white; border-radius: 9999px; }
+    .dot-inactive{ width: 12px; height: 12px; background: rgba(255,255,255,0.5); border-radius: 9999px; }
+    .nav-active   { background: white; color: #166534; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .nav-inactive { color: #bbf7d0; }
+    .nav-inactive:hover { background: #15803d; }
+    .subnav-active   { background: rgba(255,255,255,0.15); color: white; }
+    .subnav-inactive { color: #bbf7d0; }
+    .subnav-inactive:hover { background: rgba(255,255,255,0.1); }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #bbf7d0; border-radius: 4px; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .gallery-item { overflow: hidden; border-radius: 16px; }
+    .gallery-item img { transition: transform 0.3s ease; }
+    .gallery-item:hover img { transform: scale(1.05); }
+    .filter-btn-active { background: #166534; color: white; }
+    .filter-btn-inactive { background: white; color: #374151; border: 1px solid #d1fae5; }
+    .filter-btn-inactive:hover { background: #f0fdf4; }
+    .mat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+    .mat-card { transition: transform 0.2s, box-shadow 0.2s; }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="min-h-screen bg-sky-300 flex items-center justify-center p-6">
+  <div class="w-full max-w-7xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <div class="flex">
+
+      <!-- SIDEBAR -->
+      <aside class="w-80 bg-green-700 flex flex-col relative flex-shrink-0" style="min-height: 90vh">
+        <div class="px-8 pt-12 pb-8">
+          <h1 class="text-white text-4xl font-bold tracking-tight">HydroGreen</h1>
+          <p class="text-green-200 text-base mt-2">Cultiva el futuro</p>
+        </div>
+        <nav class="flex-1 px-4" id="sidebar-nav">
+          <button onclick="setNav(0)" id="nav-0" class="nav-btn w-full flex items-center gap-4 px-5 py-4 rounded-xl mb-2 text-base font-medium transition-all nav-active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Conocimiento Hidroponia
+          </button>
+          <button onclick="setNav(1)" id="nav-1" class="nav-btn w-full flex items-center gap-4 px-5 py-4 rounded-xl mb-2 text-base font-medium transition-all nav-inactive">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Importancia de Hidroponia
+          </button>
+          <div class="mb-2">
+            <button onclick="toggleSubmenu()" id="nav-2" class="nav-btn w-full flex items-center justify-between px-5 py-4 rounded-xl text-base font-medium transition-all nav-inactive">
+              <div class="flex items-center gap-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                Materiales y Cuidados
+              </div>
+              <svg id="submenu-arrow" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.2s; transform: rotate(0deg)"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="submenu" class="hidden pl-8 pr-3 pt-2">
+              <button onclick="setSubNav(0)" id="subnav-0" class="subnav-btn w-full flex items-center gap-3 px-5 py-3 rounded-lg text-base transition-all subnav-inactive">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                Materiales
+              </button>
+              <button onclick="setSubNav(1)" id="subnav-1" class="subnav-btn w-full flex items-center gap-3 px-5 py-3 rounded-lg text-base transition-all subnav-inactive">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/><path d="M10.5 8v8"/><path d="M14 14h-4"/><path d="M14 18h-4"/></svg>
+                Cuidados
+              </button>
+              <button onclick="setSubNav(2)" id="subnav-2" class="subnav-btn w-full flex items-center gap-3 px-5 py-3 rounded-lg text-base transition-all subnav-inactive">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Productos
+              </button>
+            </div>
+          </div>
+          <button onclick="setNav(3)" id="nav-3" class="nav-btn w-full flex items-center gap-4 px-5 py-4 rounded-xl mb-2 text-base font-medium transition-all nav-inactive">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Galeria
+          </button>
+          <button onclick="setNav(4)" id="nav-4" class="nav-btn w-full flex items-center gap-4 px-5 py-4 rounded-xl mb-2 text-base font-medium transition-all nav-inactive">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Acerca de Nosotros
+          </button>
+        </nav>
+
+        <!-- Tip del dia -->
+        <div class="mx-4 mb-4 bg-green-600 rounded-2xl p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-7 h-7 bg-yellow-300 rounded-full flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#166534" stroke="#166534" stroke-width="1"><path d="M12 2a7 7 0 0 1 7 7c0 3-1.8 5.5-4.5 6.5V17H9.5v-1.5C6.8 14.5 5 12 5 9a7 7 0 0 1 7-7zM9.5 19h5v2h-5z"/></svg>
+            </div>
+            <span class="text-yellow-200 text-xs font-bold uppercase tracking-wide">Tip del dia</span>
+          </div>
+          <p id="daily-tip" class="text-green-100 text-sm leading-relaxed"></p>
+        </div>
+
+        <div class="mx-4 mb-6 bg-white rounded-2xl p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-9 h-9 bg-green-100 rounded-full flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <span class="text-green-800 text-sm font-bold uppercase tracking-wide">Pago y Planes</span>
+          </div>
+          <p class="text-gray-500 text-sm leading-relaxed mb-3">Accede a contenido exclusivo y cursos especializados en hidroponia.</p>
+          <p class="text-gray-700 text-sm font-semibold mb-2">Incluye:</p>
+          <ul class="text-gray-500 text-sm space-y-1">
+            <li>- Cursos y guias de hidroponia</li>
+            <li>- Comunidad activa</li>
+            <li>- Soporte 24/7</li>
+            <li>- Contenido exclusivo</li>
+          </ul>
+        </div>
+        <div class="px-8 pb-8">
+          <button class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm hover:bg-green-50 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </button>
+        </div>
+        <div class="absolute right-0 rounded-full bg-green-500" style="width:6px; top:20%; bottom:20%"></div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="flex-1 bg-gray-50 overflow-y-auto relative" style="min-height: 90vh">
+
+        <!-- PAGE 0: HOME / CONOCIMIENTO HIDROPONIA -->
+        <div id="page-0" class="page active fade-in">
+          <div class="px-12 pt-12 pb-6 flex items-start gap-10">
+            <div>
+              <h2 class="text-6xl font-extrabold text-green-600 leading-none tracking-tight">HIDROPONIA</h2>
+              <h2 class="text-6xl font-extrabold text-sky-400 leading-tight tracking-tight mt-1">QUE INSPIRA</h2>
+            </div>
+            <div class="border-l-2 border-green-300 pl-6 pt-2">
+              <p class="text-gray-500 text-lg leading-relaxed" style="max-width:250px">Aprende, cultiva y comparte con la comunidad</p>
+            </div>
+          </div>
+
+          <!-- Carousel -->
+          <div class="px-12 pb-8">
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl" style="height:480px">
+              <img id="slide-img" src="https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="slide" class="slide-img w-full h-full object-cover" />
+              <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.3), transparent)"></div>
+              <div class="absolute inset-0 flex flex-col justify-center px-16">
+                <h3 id="slide-title" class="text-white font-extrabold leading-tight" style="font-size:3.5rem; text-shadow:0 4px 16px rgba(0,0,0,0.5)">Cultivo<br/>sin tierra</h3>
+                <p id="slide-sub" class="text-xl mt-4" style="color:rgba(255,255,255,0.95)">Mas crecimiento, menos limites</p>
+                <button onclick="setNav(0)" class="mt-6 px-8 py-3 bg-green-500 hover:bg-green-600 text-white text-base font-semibold rounded-full transition-colors shadow-xl" style="width:fit-content">Conocer mas</button>
+              </div>
+              <button onclick="prevSlide()" class="absolute top-1/2 left-6 -translate-y-1/2 flex items-center justify-center text-white transition-colors rounded-full" style="width:50px;height:50px;background:rgba(255,255,255,0.25);backdrop-filter:blur(6px)" onmouseover="this.style.background='rgba(255,255,255,0.45)'" onmouseout="this.style.background='rgba(255,255,255,0.25)'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button onclick="nextSlide()" class="absolute top-1/2 right-6 -translate-y-1/2 flex items-center justify-center text-white transition-colors rounded-full" style="width:50px;height:50px;background:rgba(255,255,255,0.25);backdrop-filter:blur(6px)" onmouseover="this.style.background='rgba(255,255,255,0.45)'" onmouseout="this.style.background='rgba(255,255,255,0.25)'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+              <div class="absolute bottom-5 left-1/2 flex gap-3" style="transform:translateX(-50%)">
+                <button id="dot-0" class="dot-active transition-all" onclick="goToSlide(0)"></button>
+                <button id="dot-1" class="dot-inactive transition-all" onclick="goToSlide(1)"></button>
+                <button id="dot-2" class="dot-inactive transition-all" onclick="goToSlide(2)"></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- What is hydroponics -->
+          <div class="px-12 pb-6">
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Que es la Hidroponia?</h3>
+            <p class="text-gray-500 text-base leading-relaxed mb-6" style="max-width:680px">La hidroponia es una tecnica de cultivo que utiliza agua con nutrientes en lugar de suelo. Permite producir alimentos mas saludables, en menos espacio y cuidando el planeta.</p>
+            <h4 class="text-lg font-bold text-gray-700 mb-4">Ventajas principales</h4>
+            <div class="grid grid-cols-3 gap-4 mb-8">
+              <div class="bg-white rounded-2xl p-5 shadow-sm border border-green-100">
+                <div class="w-11 h-11 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                </div>
+                <p class="text-green-700 font-bold text-sm mb-1">Ahorra agua</p>
+                <p class="text-gray-500 text-xs leading-relaxed">Usa hasta 90% menos agua que el cultivo tradicional.</p>
+              </div>
+              <div class="bg-white rounded-2xl p-5 shadow-sm border border-green-100">
+                <div class="w-11 h-11 bg-green-100 rounded-full flex items-center justify-center mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </div>
+                <p class="text-green-700 font-bold text-sm mb-1">Crecimiento rapido</p>
+                <p class="text-gray-500 text-xs leading-relaxed">Las plantas crecen mas rapido y con mas nutrientes.</p>
+              </div>
+              <div class="bg-white rounded-2xl p-5 shadow-sm border border-green-100">
+                <div class="w-11 h-11 bg-emerald-100 rounded-full flex items-center justify-center mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                </div>
+                <p class="text-green-700 font-bold text-sm mb-1">Cultivo sostenible</p>
+                <p class="text-gray-500 text-xs leading-relaxed">No usa pesticidas en exceso y reduce el impacto ambiental.</p>
+              </div>
+            </div>
+            <h4 class="text-lg font-bold text-gray-700 mb-4">Como funciona?</h4>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-green-100">
+              <div class="flex items-center gap-2">
+                <div class="flex-1 bg-green-50 rounded-xl p-4 text-center">
+                  <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+                  <p class="text-xs font-semibold text-gray-700">Agua con<br/>nutrientes</p>
+                </div>
+                <div class="text-green-400 font-bold text-xl flex-shrink-0">→</div>
+                <div class="flex-1 bg-green-50 rounded-xl p-4 text-center">
+                  <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg></div>
+                  <p class="text-xs font-semibold text-gray-700">Las raices<br/>absorben</p>
+                </div>
+                <div class="text-green-400 font-bold text-xl flex-shrink-0">→</div>
+                <div class="flex-1 bg-green-50 rounded-xl p-4 text-center">
+                  <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/></svg></div>
+                  <p class="text-xs font-semibold text-gray-700">La planta<br/>crece sana</p>
+                </div>
+                <div class="text-green-400 font-bold text-xl flex-shrink-0">→</div>
+                <div class="flex-1 bg-green-50 rounded-xl p-4 text-center">
+                  <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+                  <p class="text-xs font-semibold text-gray-700">Cosecha<br/>fresca</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Features bar -->
+          <div class="px-12 pb-12">
+            <div class="bg-green-50 rounded-3xl px-10 py-6 grid grid-cols-3 divide-x divide-green-200">
+              <div class="flex items-center gap-5 pr-10">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div>
+                <div><p class="text-green-700 text-lg font-bold">Ahorra agua</p><p class="text-gray-500 text-sm">Hasta 90% menos que el cultivo tradicional</p></div>
+              </div>
+              <div class="flex items-center gap-5 px-10">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+                <div><p class="text-green-700 text-lg font-bold">Crecimiento rapido</p><p class="text-gray-500 text-sm">Plantas mas sanas y productivas</p></div>
+              </div>
+              <div class="flex items-center gap-5 pl-10">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                <div><p class="text-green-700 text-lg font-bold">100% sostenible</p><p class="text-gray-500 text-sm">Cuida el planeta mientras cosechas</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        
+
+        <!-- PAGE 1: IMPORTANCIA -->
+        <div id="page-1" class="page fade-in">
+          <div class="px-12 pt-12 pb-6">
+            <h2 class="text-4xl font-extrabold text-green-600 mb-1">Importancia de la Hidroponia</h2>
+            <p class="text-gray-500 text-base">Por que es importante la hidroponia?</p>
+          </div>
+          <div class="px-12 pb-6">
+            <h3 class="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2"><span class="text-green-500">↗</span> Beneficios ambientales</h3>
+            <div class="grid grid-cols-3 gap-4 mb-8">
+              <div class="bg-white rounded-2xl p-6 shadow-sm border border-blue-100 text-center">
+                <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+                <p class="text-green-700 font-bold text-sm mb-2">Menos uso de agua</p>
+                <p class="text-gray-500 text-xs leading-relaxed">Ahorra hasta 90% mas agua que la agricultura tradicional.</p>
+              </div>
+              <div class="bg-white rounded-2xl p-6 shadow-sm border border-green-100 text-center">
+                <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div>
+                <p class="text-green-700 font-bold text-sm mb-2">Menos contaminacion</p>
+                <p class="text-gray-500 text-xs leading-relaxed">No usa pesticidas ni productos quimicos toxicos.</p>
+              </div>
+              <div class="bg-white rounded-2xl p-6 shadow-sm border border-emerald-100 text-center">
+                <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+                <p class="text-green-700 font-bold text-sm mb-2">Produccion sostenible</p>
+                <p class="text-gray-500 text-xs leading-relaxed">Cuidamos el planeta con cultivos responsables y sustentables.</p>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-gray-700 mb-2 flex items-center gap-2"><span class="text-green-500">↗</span> Beneficios alimenticios</h3>
+            <p class="text-gray-500 text-sm mb-5">Los cultivos hidroponicos son mas frescos, nutritivos y saludables.</p>
+            <h4 class="text-base font-bold text-gray-600 mb-3">Productos que puedes cultivar y consumir</h4>
+            <div class="relative bg-white rounded-2xl p-5 shadow-sm border border-green-100 mb-6">
+              <div class="flex gap-4 overflow-hidden">
+                <div class="flex-shrink-0 text-center w-32"><div class="w-20 h-20 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-2 overflow-hidden"><img src="https://images.pexels.com/photos/2893635/pexels-photo-2893635.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=1" alt="Lechuga" class="w-full h-full object-cover rounded-2xl"/></div><p class="text-sm font-semibold text-gray-700">Lechuga</p></div>
+                <div class="flex-shrink-0 text-center w-32"><div class="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-2 overflow-hidden"><img src="https://images.pexels.com/photos/533280/pexels-photo-533280.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=1" alt="Tomate" class="w-full h-full object-cover rounded-2xl"/></div><p class="text-sm font-semibold text-gray-700">Tomate</p></div>
+                <div class="flex-shrink-0 text-center w-32"><div class="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-2 overflow-hidden"><img src="https://images.pexels.com/photos/46174/strawberries-berries-fruit-freshness-46174.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=1" alt="Fresa" class="w-full h-full object-cover rounded-2xl"/></div><p class="text-sm font-semibold text-gray-700">Fresa</p></div>
+                <div class="flex-shrink-0 text-center w-32"><div class="w-20 h-20 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-2 overflow-hidden"><img src="https://images.pexels.com/photos/2325843/pexels-photo-2325843.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=1" alt="Espinaca" class="w-full h-full object-cover rounded-2xl"/></div><p class="text-sm font-semibold text-gray-700">Espinaca</p></div>
+                <div class="flex-shrink-0 text-center w-32"><div class="w-20 h-20 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-2 overflow-hidden"><img src="https://images.pexels.com/photos/906150/pexels-photo-906150.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=1" alt="Albahaca" class="w-full h-full object-cover rounded-2xl"/></div><p class="text-sm font-semibold text-gray-700">Albahaca</p></div>
+              </div>
+              <div class="flex justify-center gap-2 mt-4"><button class="w-3 h-3 rounded-full bg-green-500"></button><button class="w-3 h-3 rounded-full bg-gray-200"></button><button class="w-3 h-3 rounded-full bg-gray-200"></button></div>
+            </div>
+            <h3 class="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2"><span class="text-green-500">↗</span> Impacto en tu vida</h3>
+            <div class="grid grid-cols-3 gap-4 pb-12">
+              <div class="bg-white rounded-2xl p-5 shadow-sm border border-green-100"><div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><p class="text-green-700 font-bold text-sm mb-1">Alimentos mas saludables</p><p class="text-gray-500 text-xs leading-relaxed">Para una mejor calidad de vida.</p></div>
+              <div class="bg-white rounded-2xl p-5 shadow-sm border border-green-100"><div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><p class="text-green-700 font-bold text-sm mb-1">Produccion local</p><p class="text-gray-500 text-xs leading-relaxed">Apoya a tu comunidad y la economia.</p></div>
+              <div class="bg-white rounded-2xl p-5 shadow-sm border border-green-100"><div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><p class="text-green-700 font-bold text-sm mb-1">Mas oportunidades</p><p class="text-gray-500 text-xs leading-relaxed">Nuevas formas de cultivo y emprendimiento.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 2A: MATERIALES -->
+        <div id="page-2a" class="page fade-in">
+          <div class="px-12 pt-12 pb-4">
+            <div class="text-xs text-gray-400 font-medium mb-1 uppercase tracking-wide">Materiales y Cuidados</div>
+            <h2 class="text-4xl font-extrabold text-green-600 mb-1 flex items-center gap-3">Materiales <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></h2>
+            <p class="text-gray-500 text-sm">Todo lo que necesitas para empezar tu cultivo hidroponico.</p>
+          </div>
+          <div class="px-12 pb-6">
+            <div class="grid grid-cols-2 gap-6 mb-6">
+              <div>
+                <h4 class="text-sm font-bold text-gray-600 mb-3">1. Video: Como funciona un sistema hidroponico?</h4>
+                <div class="relative bg-gray-900 rounded-2xl overflow-hidden shadow-md" style="height:180px">
+                  <img src="https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1" alt="video" class="w-full h-full object-cover opacity-70"/>
+                  <div class="absolute inset-0 flex items-center justify-center"><div class="w-14 h-14 bg-white bg-opacity-90 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-opacity-100 transition"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#166534" stroke="#166534" stroke-width="1"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>
+                  <div class="absolute bottom-3 left-4 flex items-center gap-2"><div class="flex-1 bg-white bg-opacity-30 rounded-full h-1"><div class="bg-green-400 h-1 rounded-full" style="width:35%"></div></div><span class="text-white text-xs">0:00 / 2:45</span></div>
+                </div>
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-gray-600 mb-3">2. Materiales basicos</h4>
+                <div class="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100" style="height:180px"><img src="https://images.pexels.com/photos/4503273/pexels-photo-4503273.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1" alt="materiales" class="w-full h-full object-cover"/></div>
+              </div>
+            </div>
+            <h4 class="text-sm font-bold text-gray-600 mb-3">3. Materiales necesarios</h4>
+            <div class="flex gap-4 overflow-x-auto pb-4" style="scrollbar-width:none">
+              <div class="mat-card flex-shrink-0 bg-white rounded-2xl p-4 shadow-sm border border-green-100 text-center" style="width:130px"><div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><p class="text-xs font-bold text-gray-700 mb-1">Tubos PVC</p><p class="text-xs text-gray-400 leading-tight">Estructura principal donde circula el agua.</p></div>
+              <div class="mat-card flex-shrink-0 bg-white rounded-2xl p-4 shadow-sm border border-blue-100 text-center" style="width:130px"><div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div><p class="text-xs font-bold text-gray-700 mb-1">Bomba de agua</p><p class="text-xs text-gray-400 leading-tight">Permite la circulacion del agua con nutrientes.</p></div>
+              <div class="mat-card flex-shrink-0 bg-white rounded-2xl p-4 shadow-sm border border-green-100 text-center" style="width:130px"><div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><p class="text-xs font-bold text-gray-700 mb-1">Esponjas</p><p class="text-xs text-gray-400 leading-tight">Sostienen las raices y mantienen la planta firme.</p></div>
+              <div class="mat-card flex-shrink-0 bg-white rounded-2xl p-4 shadow-sm border border-yellow-100 text-center" style="width:130px"><div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><p class="text-xs font-bold text-gray-700 mb-1">Nutrientes</p><p class="text-xs text-gray-400 leading-tight">Aportan los minerales esenciales para el crecimiento.</p></div>
+              <div class="mat-card flex-shrink-0 bg-white rounded-2xl p-4 shadow-sm border border-orange-100 text-center" style="width:130px"><div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><p class="text-xs font-bold text-gray-700 mb-1">Medidor de pH</p><p class="text-xs text-gray-400 leading-tight">Controla el nivel de acides del agua para mejor absorcion.</p></div>
+              <div class="mat-card flex-shrink-0 bg-white rounded-2xl p-4 shadow-sm border border-sky-100 text-center" style="width:130px"><div class="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><p class="text-xs font-bold text-gray-700 mb-1">Luz LED</p><p class="text-xs text-gray-400 leading-tight">Proporciona la luz necesaria para la fotosintesis.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 2B: CUIDADOS -->
+        <div id="page-2b" class="page fade-in">
+          <div class="px-12 pt-12 pb-4">
+            <div class="text-xs text-gray-400 font-medium mb-1 uppercase tracking-wide">Materiales y Cuidados</div>
+            <h2 class="text-4xl font-extrabold text-green-600 mb-1 flex items-center gap-3">Cuidados <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></h2>
+            <p class="text-gray-500 text-sm mb-6">Sigue estos pasos para mantener tus cultivos sanos y productivos.</p>
+          </div>
+          <div class="px-12 pb-6">
+            <h4 class="text-base font-bold text-gray-700 mb-4">Paso a paso</h4>
+            <div class="grid grid-cols-7 gap-2 mb-8">
+              <div class="bg-green-50 rounded-xl p-3 text-center border border-green-100"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">1</div><div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div><p class="text-xs font-bold text-gray-700">Preparar el agua</p><p class="text-xs text-gray-400 mt-1 leading-tight">Usa agua limpia y verifica el pH (5.5-6.5).</p></div>
+              <div class="flex items-center justify-center text-green-400">→</div>
+              <div class="bg-green-50 rounded-xl p-3 text-center border border-green-100"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">2</div><div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><p class="text-xs font-bold text-gray-700">Agregar nutrientes</p><p class="text-xs text-gray-400 mt-1 leading-tight">Mezcla los nutrientes segun las instrucciones.</p></div>
+              <div class="flex items-center justify-center text-green-400">→</div>
+              <div class="bg-green-50 rounded-xl p-3 text-center border border-green-100"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">3</div><div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/></svg></div><p class="text-xs font-bold text-gray-700">Colocar plantas</p><p class="text-xs text-gray-400 mt-1 leading-tight">Pon las plantulas en las esponjas o canastillas.</p></div>
+              <div class="flex items-center justify-center text-green-400">→</div>
+              <div class="bg-green-50 rounded-xl p-3 text-center border border-green-100"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">4</div><div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><p class="text-xs font-bold text-gray-700">Ubicar en sistema</p><p class="text-xs text-gray-400 mt-1 leading-tight">Coloca las plantas en el sistema hidroponico.</p></div>
+            </div>
+            <div class="grid grid-cols-7 gap-2 mb-8">
+              <div class="bg-green-50 rounded-xl p-3 text-center border border-green-100"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">5</div><div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p class="text-xs font-bold text-gray-700">Controlar y revisar</p><p class="text-xs text-gray-400 mt-1 leading-tight">Revisa el pH y nivel de agua semanalmente.</p></div>
+              <div class="flex items-center justify-center text-green-400">→</div>
+              <div class="bg-green-50 rounded-xl p-3 text-center border border-green-100"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">6</div><div class="w-8 h-8 bg-sky-100 rounded-full flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6l11 6 11-6M1 12l11 6 11-6"/></svg></div><p class="text-xs font-bold text-gray-700">Observar crecimiento</p><p class="text-xs text-gray-400 mt-1 leading-tight">Asegura buena iluminacion y ventilacion.</p></div>
+              <div class="flex items-center justify-center text-green-400">→</div>
+              <div class="bg-green-50 rounded-xl p-3 text-center border border-green-100 col-span-3"><div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">7</div><div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div><p class="text-xs font-bold text-gray-700">Cosechar</p><p class="text-xs text-gray-400 mt-1 leading-tight">Espera y cuida plantas hasta la cosecha.</p></div>
+            </div>
+            <div class="bg-green-50 rounded-2xl p-6 border border-green-200">
+              <h4 class="text-base font-bold text-gray-700 mb-4">Consejos importantes</h4>
+              <ul class="space-y-2">
+                <li class="flex items-center gap-3 text-sm text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Manten el agua limpia siempre.</li>
+                <li class="flex items-center gap-3 text-sm text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Revisa los niveles de nutrientes cada semana.</li>
+                <li class="flex items-center gap-3 text-sm text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Asegura buena iluminacion para tus plantas.</li>
+                <li class="flex items-center gap-3 text-sm text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Observa tus plantas todos los dias.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 2C: PRODUCTOS (LECHUGA) -->
+        <div id="page-2c" class="page fade-in">
+          <div class="px-12 pt-12 pb-4">
+            <div class="text-xs text-gray-400 font-medium mb-1 uppercase tracking-wide">Materiales y Cuidados</div>
+            <h2 class="text-4xl font-extrabold text-green-600 mb-1 flex items-center gap-3">Productos / Alimentos <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></h2>
+            <p class="text-gray-500 text-sm mb-6">Elige el cultivo que deseas aprender. Conoce como hacerlo paso a paso.</p>
+          </div>
+          <div class="px-12 pb-6">
+            <div class="bg-white rounded-3xl shadow-sm border border-green-100 overflow-hidden mb-6">
+              <div class="relative h-56">
+                <img src="https://images.pexels.com/photos/2893635/pexels-photo-2893635.jpeg?auto=compress&cs=tinysrgb&w=1200&h=500&dpr=1" alt="Lechuga hidroponica" class="w-full h-full object-cover"/>
+                <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(0,0,0,0.65), rgba(0,0,0,0.2), transparent)"></div>
+                <div class="absolute inset-0 flex items-center px-10"><div><span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">Nuestro Producto</span><h3 class="text-white text-5xl font-extrabold" style="text-shadow:0 3px 12px rgba(0,0,0,0.4)">Lechuga</h3><p class="text-green-200 text-base mt-1">Cultivo Hidroponico</p></div></div>
+              </div>
+              <div class="p-6">
+                <p class="text-gray-600 text-sm leading-relaxed mb-4">La lechuga hidroponica crece mas rapido, produce mas y con mejor calidad. Es ideal para principiantes y expertos por igual.</p>
+                <div class="grid grid-cols-4 gap-4">
+                  <div class="bg-green-50 rounded-xl p-3 text-center"><div class="w-9 h-9 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><p class="text-xs text-gray-500">Tiempo</p><p class="text-xs font-bold text-gray-700">25-35 dias</p></div>
+                  <div class="bg-yellow-50 rounded-xl p-3 text-center"><div class="w-9 h-9 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div><p class="text-xs text-gray-500">Luz</p><p class="text-xs font-bold text-gray-700">14-16 hrs</p></div>
+                  <div class="bg-blue-50 rounded-xl p-3 text-center"><div class="w-9 h-9 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div><p class="text-xs text-gray-500">Agua</p><p class="text-xs font-bold text-gray-700">pH 6.0-7.0</p></div>
+                  <div class="bg-orange-50 rounded-xl p-3 text-center"><div class="w-9 h-9 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div><p class="text-xs text-gray-500">Dificultad</p><p class="text-xs font-bold text-gray-700">Facil</p></div>
+                </div>
+              </div>
+            </div>
+            <h4 class="text-base font-bold text-gray-700 mb-4">Paso a paso para cultivar Lechuga</h4>
+            <div class="grid grid-cols-6 gap-3 mb-6">
+              <div class="bg-white rounded-2xl p-4 shadow-sm border border-green-100 text-center"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">1</div><img src="https://images.pexels.com/photos/4503273/pexels-photo-4503273.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&dpr=1" alt="" class="w-10 h-10 object-cover rounded-lg mx-auto mb-2"/><p class="text-xs font-bold text-gray-700">Preparar el agua</p><p class="text-xs text-gray-400 mt-1">Ajusta pH y nutrientes</p></div>
+              <div class="bg-white rounded-2xl p-4 shadow-sm border border-green-100 text-center"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">2</div><img src="https://images.pexels.com/photos/2893635/pexels-photo-2893635.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&dpr=1" alt="" class="w-10 h-10 object-cover rounded-lg mx-auto mb-2"/><p class="text-xs font-bold text-gray-700">Semillas</p><p class="text-xs text-gray-400 mt-1">Pon semillas en esponja</p></div>
+              <div class="bg-white rounded-2xl p-4 shadow-sm border border-green-100 text-center"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">3</div><img src="https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&dpr=1" alt="" class="w-10 h-10 object-cover rounded-lg mx-auto mb-2"/><p class="text-xs font-bold text-gray-700">Germinacion</p><p class="text-xs text-gray-400 mt-1">Espera 3-5 dias</p></div>
+              <div class="bg-white rounded-2xl p-4 shadow-sm border border-green-100 text-center"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">4</div><img src="https://images.pexels.com/photos/3054278/pexels-photo-3054278.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&dpr=1" alt="" class="w-10 h-10 object-cover rounded-lg mx-auto mb-2"/><p class="text-xs font-bold text-gray-700">Trasplantar</p><p class="text-xs text-gray-400 mt-1">Mueve al sistema</p></div>
+              <div class="bg-white rounded-2xl p-4 shadow-sm border border-green-100 text-center"><div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">5</div><img src="https://images.pexels.com/photos/2518861/pexels-photo-2518861.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&dpr=1" alt="" class="w-10 h-10 object-cover rounded-lg mx-auto mb-2"/><p class="text-xs font-bold text-gray-700">Cuidar</p><p class="text-xs text-gray-400 mt-1">Riega y revisa pH</p></div>
+              <div class="bg-green-50 rounded-2xl p-4 shadow-sm border border-green-300 text-center"><div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-2">6</div><img src="https://images.pexels.com/photos/2893635/pexels-photo-2893635.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&dpr=1" alt="" class="w-10 h-10 object-cover rounded-lg mx-auto mb-2"/><p class="text-xs font-bold text-green-700">Cosechar</p><p class="text-xs text-green-500 mt-1">Dias 25-35</p></div>
+            </div>
+            <div class="bg-green-50 rounded-2xl p-5 border border-green-200">
+              <h5 class="text-sm font-bold text-gray-700 mb-3">Cuidados especiales de la Lechuga</h5>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-0.5"><polyline points="20 6 9 17 4 12"/></svg><p class="text-xs text-gray-600">Revisar pH (5.5 - 6.5) diariamente</p></div>
+                <div class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-0.5"><polyline points="20 6 9 17 4 12"/></svg><p class="text-xs text-gray-600">Cambiar agua cada 1-2 semanas</p></div>
+                <div class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-0.5"><polyline points="20 6 9 17 4 12"/></svg><p class="text-xs text-gray-600">Asegurar buena iluminacion (14-16 hrs)</p></div>
+                <div class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-0.5"><polyline points="20 6 9 17 4 12"/></svg><p class="text-xs text-gray-600">Evitar temperaturas extremas (18-24°C)</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 3: GALERIA -->
+        <div id="page-3" class="page fade-in">
+          <div class="px-12 pt-12 pb-6">
+            <h2 class="text-4xl font-extrabold text-green-600 mb-1">Galeria</h2>
+            <p class="text-gray-500 text-sm mb-5">Fotos y momentos de nuestros cultivos hidroponicos de lechuga.</p>
+            <div class="flex gap-3 mb-6">
+              <button onclick="filterGallery('todos')" id="filter-todos" class="filter-btn-active px-5 py-2 rounded-full text-sm font-semibold transition-all">Todos</button>
+              <button onclick="filterGallery('cultivos')" id="filter-cultivos" class="filter-btn-inactive px-5 py-2 rounded-full text-sm font-semibold transition-all">Cultivos</button>
+              <button onclick="filterGallery('materiales')" id="filter-materiales" class="filter-btn-inactive px-5 py-2 rounded-full text-sm font-semibold transition-all">Materiales</button>
+              <button onclick="filterGallery('procesos')" id="filter-procesos" class="filter-btn-inactive px-5 py-2 rounded-full text-sm font-semibold transition-all">Procesos</button>
+            </div>
+            <div id="gallery-grid" class="grid grid-cols-3 gap-4 pb-12">
+              <div class="gallery-item h-44 cursor-pointer" data-cat="cultivos"><img src="https://images.pexels.com/photos/2893635/pexels-photo-2893635.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1" alt="Lechuga" class="w-full h-full object-cover"/></div>
+              <div class="gallery-item h-44 cursor-pointer" data-cat="cultivos"><img src="https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1" alt="Hidroponia" class="w-full h-full object-cover"/></div>
+              <div class="gallery-item h-44 cursor-pointer" data-cat="materiales"><img src="https://images.pexels.com/photos/4503273/pexels-photo-4503273.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1" alt="Materiales" class="w-full h-full object-cover"/></div>
+              <div class="gallery-item h-44 cursor-pointer" data-cat="procesos"><img src="https://images.pexels.com/photos/3054278/pexels-photo-3054278.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1" alt="Proceso" class="w-full h-full object-cover"/></div>
+              <div class="gallery-item h-44 cursor-pointer" data-cat="cultivos"><img src="https://images.pexels.com/photos/2518861/pexels-photo-2518861.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1" alt="Cosecha" class="w-full h-full object-cover"/></div>
+              <div class="gallery-item h-44 cursor-pointer" data-cat="materiales"><img src="https://images.pexels.com/photos/1453499/pexels-photo-1453499.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1" alt="Sistema" class="w-full h-full object-cover"/></div>
+              <div class="gallery-item h-44 cursor-pointer col-span-2" data-cat="cultivos"><img src="https://images.pexels.com/photos/3097770/pexels-photo-3097770.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1" alt="Lechuga grande" class="w-full h-full object-cover"/></div>
+              <div class="gallery-item h-44 cursor-pointer" data-cat="procesos"><img src="https://images.pexels.com/photos/1656666/pexels-photo-1656666.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1" alt="Riego" class="w-full h-full object-cover"/></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 4: ACERCA DE NOSOTROS -->
+        <div id="page-4" class="page fade-in">
+          <div class="px-12 pt-12 pb-6">
+            <h2 class="text-4xl font-extrabold text-green-600 mb-1">Acerca de Nosotros</h2>
+          </div>
+          <div class="px-12 pb-6">
+            <div class="grid grid-cols-2 gap-6 mb-8">
+              <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-green-100"><img src="https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg?auto=compress&cs=tinysrgb&w=600&h=350&dpr=1" alt="HydroGreen" class="w-full h-44 object-cover"/><div class="p-5"><h3 class="text-lg font-bold text-gray-800 mb-2">Nuestra mision</h3><p class="text-gray-500 text-sm leading-relaxed">Promover el cultivo hidroponico como una solucion sostenible, saludable y accesible para todos.</p></div></div>
+              <div class="bg-green-50 rounded-3xl p-6 border border-green-100"><h3 class="text-lg font-bold text-gray-800 mb-3">Quienes somos?</h3><p class="text-gray-600 text-sm leading-relaxed mb-4">Somos un equipo apasionado por la agricultura sostenible y la innovacion. Buscamos ensenar y apoyar a mas personas a cultivar sus propios alimentos.</p><div class="flex items-center gap-3 p-3 bg-white rounded-xl"><div class="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><p class="text-sm font-bold text-gray-700">Equipo HydroGreen</p><p class="text-xs text-gray-500">Agricultores, educadores e innovadores</p></div></div></div>
+            </div>
+            <div class="grid grid-cols-3 gap-4 mb-8">
+              <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-blue-100"><div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div><p class="text-3xl font-extrabold text-green-700">90%</p><p class="text-xs text-gray-500 mt-1 leading-tight">menos agua que el cultivo tradicional</p></div>
+              <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-green-100"><div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><p class="text-3xl font-extrabold text-green-700">100%</p><p class="text-xs text-gray-500 mt-1 leading-tight">alimentos mas frescos y saludables</p></div>
+              <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-emerald-100"><div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><p class="text-3xl font-extrabold text-green-700">365</p><p class="text-xs text-gray-500 mt-1 leading-tight">dias al ano cosechando en cualquier lugar</p></div>
+            </div>
+            <div class="bg-green-50 rounded-2xl p-6 border border-green-200">
+              <h4 class="text-base font-bold text-gray-700 mb-4">Comprometidos con un futuro sostenible</h4>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="flex items-center gap-3"><div class="w-9 h-9 bg-green-200 rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><p class="text-sm text-gray-600">Educacion accesible para todos</p></div>
+                <div class="flex items-center gap-3"><div class="w-9 h-9 bg-green-200 rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><p class="text-sm text-gray-600">Agricultura sin pesticidas</p></div>
+                <div class="flex items-center gap-3"><div class="w-9 h-9 bg-green-200 rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><p class="text-sm text-gray-600">Uso responsable del agua</p></div>
+                <div class="flex items-center gap-3"><div class="w-9 h-9 bg-green-200 rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><p class="text-sm text-gray-600">Comunidad activa de cultivadores</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const slides = [
+      { img: 'https://images.pexels.com/photos/1002703/pexels-photo-1002703.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', title: 'Cultivo<br/>sin tierra', sub: 'Mas crecimiento, menos limites' },
+      { img: 'https://images.pexels.com/photos/3054278/pexels-photo-3054278.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', title: 'Agua<br/>inteligente', sub: 'Ahorra hasta 90% de agua' },
+      { img: 'https://images.pexels.com/photos/2518861/pexels-photo-2518861.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2', title: 'Cosecha<br/>permanente', sub: 'Todo el ano, en cualquier lugar' }
+    ];
+    let current = 0;
+    let submenuOpen = false;
+
+    function goToSlide(n) {
+      current = (n + slides.length) % slides.length;
+      const s = slides[current];
+      const img = document.getElementById('slide-img');
+      img.style.opacity = '0';
+      setTimeout(() => { img.src = s.img; img.style.opacity = '1'; }, 200);
+      document.getElementById('slide-title').innerHTML = s.title;
+      document.getElementById('slide-sub').textContent = s.sub;
+      for (let i = 0; i < 3; i++) {
+        document.getElementById('dot-' + i).className = 'transition-all ' + (i === current ? 'dot-active' : 'dot-inactive');
+      }
+    }
+    function prevSlide() { goToSlide(current - 1); }
+    function nextSlide() { goToSlide(current + 1); }
+    setInterval(() => { if (document.getElementById('page-0').classList.contains('active')) nextSlide(); }, 4500);
+
+    const tips = [
+      'La hidroponia usa 90% menos agua que el cultivo tradicional.',
+      'Cada planta que cultivas es un paso hacia un futuro sostenible.',
+      'La constancia en los cuidados hace que tus plantas crezcan sanas.',
+      'Tener los materiales adecuados es el primer paso para el exito.',
+      'Cultiva tus propios alimentos es cuidar tu salud y el planeta.',
+      'Juntos podemos construir un futuro verde y sostenible.'
+    ];
+    let tipIdx = 0;
+    function rotateTip() {
+      document.getElementById('daily-tip').textContent = tips[tipIdx % tips.length];
+      tipIdx++;
+    }
+    rotateTip();
+    setInterval(rotateTip, 5000);
+
+    let currentPage = 'page-0';
+
+    function showPage(pageId) {
+      document.getElementById(currentPage).classList.remove('active');
+      const el = document.getElementById(pageId);
+      el.classList.add('active');
+      currentPage = pageId;
+    }
+
+    function setNav(index) {
+      if (index === 2) return;
+      for (let i = 0; i < 5; i++) {
+        const btn = document.getElementById('nav-' + i);
+        if (btn) btn.className = 'nav-btn w-full flex items-center gap-4 px-5 py-4 rounded-xl mb-2 text-base font-medium transition-all ' + (i === index ? 'nav-active' : 'nav-inactive');
+      }
+      const pageMap = { 0: 'page-0', 1: 'page-1', 3: 'page-3', 4: 'page-4' };
+      if (pageMap[index]) showPage(pageMap[index]);
+    }
+
+    function toggleSubmenu() {
+      submenuOpen = !submenuOpen;
+      const submenu = document.getElementById('submenu');
+      const arrow = document.getElementById('submenu-arrow');
+      submenu.classList.toggle('hidden', !submenuOpen);
+      arrow.style.transform = submenuOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+      for (let i = 0; i < 5; i++) {
+        const btn = document.getElementById('nav-' + i);
+        if (btn) btn.className = 'nav-btn w-full flex items-center ' + (i === 2 ? 'justify-between' : 'gap-4') + ' px-5 py-4 rounded-xl mb-2 text-base font-medium transition-all ' + (i === 2 ? 'nav-active' : 'nav-inactive');
+      }
+    }
+
+    function setSubNav(index) {
+      for (let i = 0; i < 3; i++) {
+        document.getElementById('subnav-' + i).className = 'subnav-btn w-full flex items-center gap-3 px-5 py-3 rounded-lg text-base transition-all ' + (i === index ? 'subnav-active' : 'subnav-inactive');
+      }
+      const pageMap = { 0: 'page-2a', 1: 'page-2b', 2: 'page-2c' };
+      showPage(pageMap[index]);
+    }
+
+    function filterGallery(cat) {
+      ['todos','cultivos','materiales','procesos'].forEach(c => {
+        const btn = document.getElementById('filter-' + c);
+        btn.className = c === cat ? 'filter-btn-active px-5 py-2 rounded-full text-sm font-semibold transition-all' : 'filter-btn-inactive px-5 py-2 rounded-full text-sm font-semibold transition-all';
+      });
+      document.querySelectorAll('#gallery-grid [data-cat]').forEach(item => {
+        item.style.display = (cat === 'todos' || item.dataset.cat === cat) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
